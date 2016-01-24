@@ -177,7 +177,11 @@ void print_board(SpaceType *board)
             }
         }
 
+#ifdef USE_COLOR
         printf("%s" ANSI_COLOR_RESET, space_repr(board, i, NUM_COLS - 1));
+#else
+        printf("%s", space_repr(board, i, NUM_COLS - 1));
+#endif
         printf("\n");
 
         if (i < NUM_ROWS - 1)
@@ -258,7 +262,6 @@ bool make_computer_move(SpaceType *board)
             {
                 // Test if it's a winning move for Human
                 board[move] = X;
-
                 if (is_winning_move(board, move))
                 {
                     board[move] = O;
@@ -288,7 +291,8 @@ bool make_computer_move(SpaceType *board)
     // Take center if not already taken
     if (!moveMade && board[4] == Blank)
     {
-        board[4] = O;
+        move = 4;
+        board[move] = O;
         moveMade = true;
     }
 
@@ -298,6 +302,7 @@ bool make_computer_move(SpaceType *board)
         do {
             move = rand() % 9;
         } while (board[move] != Blank);
+
         board[move] = O;
     }
 
@@ -311,7 +316,7 @@ bool is_winning_move(SpaceType *board, int32_t move)
     SpaceType playerType = board[move];
     if (playerType == Blank)
     {
-        printf("is_winning_move: Tried to check if blank was winning move\n");
+        printf("is_winning_move: Tried to check if move=%d (blank) was winning move\n", move);
         return false;
     }
 
